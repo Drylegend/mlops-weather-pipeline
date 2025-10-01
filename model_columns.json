@@ -1,0 +1,1 @@
+["temperature", "humidity", "wind_speed", "pressure", "hour", "day_of_week", "month", "temp_lag_1hr", "humidity_lag_1hr", "temp_lag_3hr", "humidity_lag_3hr", "temp_lag_6hr", "humidity_lag_6hr", "temp_roll_avg_6hr", "humidity_roll_avg_6hr", "temp_roll_avg_12hr", "humidity_roll_avg_12hr"]
