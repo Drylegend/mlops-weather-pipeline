@@ -1,0 +1,47 @@
+# .github/workflows/scheduled-retraining.yml
+
+name: Scheduled Model Retraining
+
+# --- Define the Triggers for this Workflow ---
+on:
+  schedule:
+    # Runs every Sunday at 00:00 UTC. You can change this schedule.
+    - cron: '0 0 * * 0'
+  # This line allows you to run the workflow manually from the Actions tab
+  workflow_dispatch:
+
+# --- Define the Job(s) to Run ---
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checks out your repository code so the job can access it
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    # 2. Sets up the Python version we need
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    # 3. Installs all the libraries from your requirements.txt file
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # 4. Runs your training script to generate new model artifacts
+    - name: Run the training script
+      run: python train.py
+
+    # 5. Commits the newly trained model artifacts back to the repository
+    - name: Commit and push new artifacts
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add api_model.joblib api_scaler.joblib api_columns.json
+        # The '|| true' part prevents an error if there are no changes to commit
+        git commit -m "Automated model retraining" || echo "No changes to commit"
+        git push
